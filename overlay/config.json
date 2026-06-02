@@ -1,0 +1,12 @@
+{
+  "size": 64,
+  "margin": 24,
+  "position": "top-right",
+  "stalenessMinutes": 5,
+  "colors": {
+    "working": "#f5b800",
+    "waiting-input": "#2d7ff9",
+    "finished": "#e5484d",
+    "idle": "#30a46c"
+  }
+}
