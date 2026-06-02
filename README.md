@@ -1,5 +1,7 @@
 # Claude Code Traffic Light
 
+> English | [简体中文](./README.zh-CN.md)
+
 An always-on-top desktop "traffic light" that shows what your Claude Code
 session is doing.
 
@@ -85,3 +87,13 @@ npm test
 ```
 Runs the unit suite (paths, state/color/staleness logic, status serialization, the
 hook CLI, and PID/liveness helpers) with Node's built-in test runner.
+
+## Cross-platform
+
+Pure Node + Electron, all paths resolved via `os.homedir()` — runs on **Windows and
+macOS**. Windows is fully tested; macOS has dedicated tweaks (Dock icon hidden, floats
+above full-screen Spaces) but should be verified once on a Mac.
+
+## License
+
+[MIT](./LICENSE)

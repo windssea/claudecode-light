@@ -55,6 +55,10 @@ function createWindow() {
     webPreferences: { preload: path.join(__dirname, 'preload.js') },
   });
   win.setAlwaysOnTop(true, 'screen-saver'); // stay above fullscreen apps
+  if (process.platform === 'darwin') {
+    // On macOS, also float above full-screen Spaces, not just regular windows.
+    win.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true });
+  }
   win.loadFile(path.join(__dirname, 'renderer.html'));
   win.webContents.on('did-finish-load', pushStatus);
 }
@@ -115,6 +119,8 @@ if (!app.requestSingleInstanceLock()) {
   app.quit();
 } else {
   app.whenReady().then(() => {
+    // macOS: this is a tray-only overlay, so keep it out of the Dock.
+    if (process.platform === 'darwin' && app.dock) app.dock.hide();
     writePidFile();
     createWindow();
     createTray();
