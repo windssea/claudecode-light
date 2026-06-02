@@ -2,17 +2,16 @@ const { test } = require('node:test');
 const assert = require('node:assert');
 const { STATES, colorForState, isStale } = require('../plugin/lib/states');
 
-test('STATES has the four canonical states', () => {
+test('STATES has the three canonical states', () => {
   assert.deepStrictEqual(
     [...STATES].sort(),
-    ['finished', 'idle', 'waiting-input', 'working'].sort()
+    ['idle', 'needs-you', 'working'].sort()
   );
 });
 
 test('colorForState maps each state to its color', () => {
   assert.strictEqual(colorForState('working'), '#f5b800');
-  assert.strictEqual(colorForState('waiting-input'), '#2d7ff9');
-  assert.strictEqual(colorForState('finished'), '#e5484d');
+  assert.strictEqual(colorForState('needs-you'), '#e5484d');
   assert.strictEqual(colorForState('idle'), '#30a46c');
 });
 

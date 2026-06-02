@@ -1,10 +1,9 @@
-const STATES = new Set(['working', 'waiting-input', 'finished', 'idle']);
+const STATES = new Set(['working', 'needs-you', 'idle']);
 
 const COLORS = {
-  working: '#f5b800',
-  'waiting-input': '#2d7ff9',
-  finished: '#e5484d',
-  idle: '#30a46c',
+  working: '#f5b800',     // yellow — Claude is running
+  'needs-you': '#e5484d', // red — needs your authorization or input
+  idle: '#30a46c',        // green — turn finished / no active session
 };
 
 function colorForState(state) {

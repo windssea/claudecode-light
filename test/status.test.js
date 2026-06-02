@@ -20,7 +20,7 @@ test('buildStatus keeps a valid state', () => {
 test('writeStatusAtomic writes valid JSON and leaves no temp file', () => {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'tl-'));
   const target = path.join(dir, 'status.json');
-  const status = buildStatus('finished', 'sess-3', 789);
+  const status = buildStatus('needs-you', 'sess-3', 789);
   writeStatusAtomic(target, status);
   const onDisk = JSON.parse(fs.readFileSync(target, 'utf8'));
   assert.deepStrictEqual(onDisk, status);

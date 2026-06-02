@@ -5,8 +5,7 @@
   "stalenessMinutes": 5,
   "colors": {
     "working": "#f5b800",
-    "waiting-input": "#2d7ff9",
-    "finished": "#e5484d",
+    "needs-you": "#e5484d",
     "idle": "#30a46c"
   }
 }

@@ -2,7 +2,7 @@
 const { statusFilePath } = require('../plugin/lib/paths');
 const { buildStatus, writeStatusAtomic } = require('../plugin/lib/status');
 
-const sequence = ['working', 'waiting-input', 'finished', 'idle'];
+const sequence = ['working', 'needs-you', 'idle'];
 let i = 0;
 
 console.log('Driving states every 2s. Ctrl+C to stop.');

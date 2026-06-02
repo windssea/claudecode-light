@@ -7,10 +7,9 @@ session is doing.
 
 | Color | State | Meaning |
 |-------|-------|---------|
-| 🟡 yellow | working | Claude is running/thinking |
-| 🔵 blue | waiting-input | Blocked — needs your input or permission |
-| 🔴 red | finished | Turn finished — waiting for your next prompt |
-| 🟢 green | idle | No active session |
+| 🟡 yellow | working | Claude is running |
+| 🔴 red | needs-you | Needs your authorization or input |
+| 🟢 green | idle | Turn finished, or no active session |
 
 ## How it works
 

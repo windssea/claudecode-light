@@ -10,10 +10,10 @@
       { "hooks": [{ "type": "command", "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/update-status.js\" working" }] }
     ],
     "Notification": [
-      { "hooks": [{ "type": "command", "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/update-status.js\" waiting-input" }] }
+      { "hooks": [{ "type": "command", "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/update-status.js\" needs-you" }] }
     ],
     "Stop": [
-      { "hooks": [{ "type": "command", "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/update-status.js\" finished" }] }
+      { "hooks": [{ "type": "command", "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/update-status.js\" idle" }] }
     ],
     "SessionEnd": [
       { "hooks": [{ "type": "command", "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/update-status.js\" idle" }] }
