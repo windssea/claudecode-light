@@ -1,0 +1,9 @@
+{
+  "name": "claude-traffic-light",
+  "version": "0.1.0",
+  "description": "Desktop always-on-top traffic light showing Claude Code session status.",
+  "type": "commonjs",
+  "scripts": {
+    "test": "node --test"
+  }
+}
