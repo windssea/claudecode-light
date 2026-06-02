@@ -4,7 +4,13 @@ const path = require('node:path');
 const { statusFilePath } = require('../lib/paths');
 const { isStale } = require('../lib/states');
 
-const config = JSON.parse(fs.readFileSync(path.join(__dirname, 'config.json'), 'utf8'));
+let config;
+try {
+  config = JSON.parse(fs.readFileSync(path.join(__dirname, 'config.json'), 'utf8'));
+} catch (e) {
+  console.error('Failed to read overlay/config.json:', e.message);
+  process.exit(1);
+}
 const STATUS_FILE = statusFilePath();
 
 let win;
@@ -57,16 +63,34 @@ function watchStatus() {
   fs.mkdirSync(dir, { recursive: true });
   let timer = null;
   fs.watch(dir, (_event, filename) => {
-    if (filename && !filename.startsWith('status.json')) return;
+    if (filename && filename !== 'status.json') return; // react only to the post-rename file, not the .tmp
     clearTimeout(timer);
     timer = setTimeout(pushStatus, 50); // debounce rapid writes
   });
   setInterval(pushStatus, 30_000); // catch staleness even with no file events
 }
 
-function createTray() {
+// Build a small visible tray icon (a filled gray circle) so the user can always
+// reach the Quit menu. Gray (R=G=B) sidesteps platform RGBA/BGRA byte-order differences.
+function trayIcon() {
   const { nativeImage } = require('electron');
-  tray = new Tray(nativeImage.createEmpty());
+  const px = 16;
+  const buf = Buffer.alloc(px * px * 4);
+  const r = px / 2 - 1;
+  const c = (px - 1) / 2;
+  for (let y = 0; y < px; y++) {
+    for (let x = 0; x < px; x++) {
+      const i = (y * px + x) * 4;
+      const inside = (x - c) ** 2 + (y - c) ** 2 <= r * r;
+      buf[i] = 200; buf[i + 1] = 200; buf[i + 2] = 200;
+      buf[i + 3] = inside ? 255 : 0;
+    }
+  }
+  return nativeImage.createFromBitmap(buf, { width: px, height: px });
+}
+
+function createTray() {
+  tray = new Tray(trayIcon());
   tray.setToolTip('Claude Traffic Light');
   tray.setContextMenu(Menu.buildFromTemplate([
     { label: 'Quit', click: () => app.quit() },

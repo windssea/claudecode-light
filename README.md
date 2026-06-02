@@ -31,6 +31,10 @@ real time.
 The light appears in the top-right corner, floats above other windows, and is
 draggable. Quit it from the system-tray menu.
 
+If a `working` (yellow) state goes more than `stalenessMinutes` without an update
+— e.g. the session was force-killed without a clean `Stop`/`SessionEnd` — the
+light dims to 40% opacity to flag that it may be stale.
+
 ## Configuration
 
 Edit `overlay/config.json`: `size`, `margin`, `position`
