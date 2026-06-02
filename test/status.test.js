@@ -35,3 +35,15 @@ test('writeStatusAtomic creates the target directory if missing', () => {
   assert.strictEqual(fs.existsSync(target), true);
   fs.rmSync(dir, { recursive: true, force: true });
 });
+
+test('writeStatusAtomic overwrites an existing file (second write)', () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'tl-'));
+  const target = path.join(dir, 'status.json');
+  writeStatusAtomic(target, buildStatus('working', 'a', 1));
+  writeStatusAtomic(target, buildStatus('idle', 'b', 2));
+  const onDisk = JSON.parse(fs.readFileSync(target, 'utf8'));
+  assert.strictEqual(onDisk.state, 'idle');
+  assert.strictEqual(onDisk.sessionId, 'b');
+  assert.strictEqual(fs.existsSync(target + '.tmp'), false);
+  fs.rmSync(dir, { recursive: true, force: true });
+});
