@@ -1,8 +1,9 @@
 const { app, BrowserWindow, Tray, Menu, screen } = require('electron');
 const fs = require('node:fs');
 const path = require('node:path');
-const { statusFilePath } = require('../plugin/lib/paths');
-const { isStale } = require('../plugin/lib/states');
+const { statusFilePath } = require('../lib/paths');
+const { isStale } = require('../lib/states');
+const { pidFilePath } = require('../lib/overlay');
 
 let config;
 try {
@@ -97,10 +98,29 @@ function createTray() {
   ]));
 }
 
-app.whenReady().then(() => {
-  createWindow();
-  createTray();
-  watchStatus();
-});
+function writePidFile() {
+  try {
+    fs.mkdirSync(path.dirname(pidFilePath()), { recursive: true });
+    fs.writeFileSync(pidFilePath(), String(process.pid));
+  } catch { /* non-fatal */ }
+}
 
-app.on('window-all-closed', () => app.quit());
+function clearPidFile() {
+  try { fs.unlinkSync(pidFilePath()); } catch { /* already gone */ }
+}
+
+// Single-instance lock: if an overlay is already running, this one exits immediately.
+// This is the hard guarantee against duplicates, on top of the PID pre-check in ensure-overlay.js.
+if (!app.requestSingleInstanceLock()) {
+  app.quit();
+} else {
+  app.whenReady().then(() => {
+    writePidFile();
+    createWindow();
+    createTray();
+    watchStatus();
+  });
+
+  app.on('quit', clearPidFile);
+  app.on('window-all-closed', () => app.quit());
+}

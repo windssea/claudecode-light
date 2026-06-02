@@ -1,7 +1,10 @@
 {
   "hooks": {
     "SessionStart": [
-      { "hooks": [{ "type": "command", "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/update-status.js\" working" }] }
+      { "hooks": [
+        { "type": "command", "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/update-status.js\" working" },
+        { "type": "command", "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/ensure-overlay.js\"" }
+      ] }
     ],
     "UserPromptSubmit": [
       { "hooks": [{ "type": "command", "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/update-status.js\" working" }] }

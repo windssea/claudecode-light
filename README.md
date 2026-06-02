@@ -12,58 +12,47 @@ session is doing.
 
 ## How it works
 
-Two parts:
+One plugin, two cooperating pieces:
 
-- **`plugin/`** — the Claude Code plugin. Lifecycle hooks (`plugin/hooks/hooks.json`)
-  run `plugin/hooks/update-status.js`, which atomically writes the current state to
-  `~/.claude/traffic-light/status.json`.
-- **`overlay/`** — a standalone Electron app (not part of the plugin payload) that
-  watches that file and recolors a small floating light in real time.
+- **Hooks** (`plugin/hooks/`) — Claude Code lifecycle hooks write the current state to
+  `~/.claude/traffic-light/status.json`, and on session start launch the overlay if it
+  isn't already running.
+- **Overlay** (`plugin/overlay/`) — a small Electron app that watches that file and
+  recolors a floating light. `/setup` copies it to `~/.claude/traffic-light/app/` and
+  installs Electron there.
 
-They communicate only through the fixed status file, so they run independently.
+They communicate only through the fixed status file, so they stay decoupled.
 
-## Install
-
-### 1. Install the plugin (status reporting)
+## Install — two commands, no terminal
 
 From inside Claude Code:
 
 ```text
 /plugin marketplace add windssea/claudecode-light
 /plugin install claude-traffic-light@windssea-tools
+/claude-traffic-light:setup
 ```
 
-`marketplace add` points at this GitHub repo (which holds `.claude-plugin/marketplace.json`);
-`install` pulls the `claude-traffic-light` plugin from the `./plugin` subdirectory.
-Restart Claude Code if the hooks don't take effect immediately.
+1. `marketplace add` registers this GitHub repo (which holds `.claude-plugin/marketplace.json`).
+2. `install` pulls the `claude-traffic-light` plugin from the `./plugin` subdirectory.
+3. `/setup` (run once) installs Electron into `~/.claude/traffic-light/app`, launches the
+   light, and from then on the light **auto-starts whenever you launch Claude Code** —
+   and won't start a second copy if one is already running (PID check + single-instance lock).
 
-### 2. Run the overlay (the light)
+Restart Claude Code after install if the hooks don't take effect immediately.
+
+The light appears in the top-right corner, floats above other windows, and is draggable.
+Quit it from the system-tray menu (small gray circle icon); it will come back on your next
+Claude Code session.
+
+### Developing from a clone
 
 ```bash
 git clone https://github.com/windssea/claudecode-light.git
-cd claudecode-light/overlay
-npm install   # first time only — installs Electron
-npm start
+cd claudecode-light/plugin/overlay && npm install && npm start   # run the overlay directly
 ```
 
-The light appears in the top-right corner, floats above other windows, and is
-draggable. Quit it from the system-tray menu (small gray circle icon).
-
-### 3. Auto-start the overlay on login (optional, Windows)
-
-Create a shortcut in your Startup folder pointing directly at `electron.exe`
-(not the `.cmd` wrapper, so no console window appears). PowerShell one-liner:
-
-```powershell
-$exe = "$PWD\overlay\node_modules\electron\dist\electron.exe"
-$appDir = "$PWD\overlay"
-$lnk = Join-Path ([Environment]::GetFolderPath('Startup')) 'Claude Traffic Light.lnk'
-$sc = (New-Object -ComObject WScript.Shell).CreateShortcut($lnk)
-$sc.TargetPath = $exe; $sc.Arguments = "`"$appDir`""; $sc.WorkingDirectory = $appDir
-$sc.WindowStyle = 7; $sc.Save()
-```
-
-Delete that `.lnk` from the Startup folder to disable auto-start.
+`npm test` (at the repo root) runs the unit suite.
 
 If a `working` (yellow) state goes more than `stalenessMinutes` without an update
 — e.g. the session was force-killed without a clean `Stop`/`SessionEnd` — the
@@ -75,9 +64,11 @@ light dims to 40% opacity to flag that it may be stale.
 
 ## Configuration
 
-Edit `overlay/config.json`: `size`, `margin`, `position`
+After `/setup`, edit the live config at
+`~/.claude/traffic-light/app/overlay/config.json` and restart the light (tray → Quit,
+then start a Claude session or re-run `/setup`). Keys: `size`, `margin`, `position`
 (`top-right` | `top-left` | `bottom-right` | `bottom-left`), `stalenessMinutes`,
-and per-state `colors`.
+and per-state `colors`. (The source copy lives at `plugin/overlay/config.json`.)
 
 ## Test it without a session
 
@@ -92,5 +83,5 @@ overlay react.
 ```bash
 npm test
 ```
-Runs the unit suite (path resolution, state/color/staleness logic, status
-serialization, and the hook CLI) with Node's built-in test runner.
+Runs the unit suite (paths, state/color/staleness logic, status serialization, the
+hook CLI, and PID/liveness helpers) with Node's built-in test runner.
