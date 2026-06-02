@@ -1,6 +1,6 @@
 // Cycles the status file through every state so you can watch the overlay react.
-const { statusFilePath } = require('../lib/paths');
-const { buildStatus, writeStatusAtomic } = require('../lib/status');
+const { statusFilePath } = require('../plugin/lib/paths');
+const { buildStatus, writeStatusAtomic } = require('../plugin/lib/status');
 
 const sequence = ['working', 'waiting-input', 'finished', 'idle'];
 let i = 0;

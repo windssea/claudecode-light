@@ -5,7 +5,7 @@ const os = require('node:os');
 const path = require('node:path');
 const { execFileSync } = require('node:child_process');
 
-const CLI = path.join(__dirname, '..', 'hooks', 'update-status.js');
+const CLI = path.join(__dirname, '..', 'plugin', 'hooks', 'update-status.js');
 
 function runCLI(state, stdin, homeDir) {
   execFileSync(process.execPath, [CLI, state], {

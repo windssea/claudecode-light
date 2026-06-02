@@ -1,6 +1,6 @@
 const { test } = require('node:test');
 const assert = require('node:assert');
-const { STATES, colorForState, isStale } = require('../lib/states');
+const { STATES, colorForState, isStale } = require('../plugin/lib/states');
 
 test('STATES has the four canonical states', () => {
   assert.deepStrictEqual(

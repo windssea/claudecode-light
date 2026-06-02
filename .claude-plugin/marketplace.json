@@ -1,0 +1,14 @@
+{
+  "name": "windssea-tools",
+  "owner": {
+    "name": "windssea",
+    "email": "windssea@proton.me"
+  },
+  "plugins": [
+    {
+      "name": "claude-traffic-light",
+      "source": "./plugin",
+      "description": "Reports Claude Code session status (working/waiting-input/finished/idle) to ~/.claude/traffic-light/status.json for the desktop traffic-light overlay."
+    }
+  ]
+}

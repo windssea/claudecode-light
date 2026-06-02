@@ -1,8 +1,8 @@
 const { app, BrowserWindow, Tray, Menu, screen } = require('electron');
 const fs = require('node:fs');
 const path = require('node:path');
-const { statusFilePath } = require('../lib/paths');
-const { isStale } = require('../lib/states');
+const { statusFilePath } = require('../plugin/lib/paths');
+const { isStale } = require('../plugin/lib/states');
 
 let config;
 try {

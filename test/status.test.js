@@ -3,7 +3,7 @@ const assert = require('node:assert');
 const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
-const { buildStatus, writeStatusAtomic } = require('../lib/status');
+const { buildStatus, writeStatusAtomic } = require('../plugin/lib/status');
 
 test('buildStatus normalizes unknown state to idle', () => {
   const s = buildStatus('garbage', 'sess-1', 123);
