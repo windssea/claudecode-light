@@ -29,18 +29,19 @@ They communicate only through the fixed status file, so they run independently.
 From inside Claude Code:
 
 ```text
-/plugin marketplace add D:\dev\windssea\claudeCodePlugin
+/plugin marketplace add windssea/claudecode-light
 /plugin install claude-traffic-light@windssea-tools
 ```
 
-`marketplace add` points at this repo (which holds `.claude-plugin/marketplace.json`);
+`marketplace add` points at this GitHub repo (which holds `.claude-plugin/marketplace.json`);
 `install` pulls the `claude-traffic-light` plugin from the `./plugin` subdirectory.
 Restart Claude Code if the hooks don't take effect immediately.
 
 ### 2. Run the overlay (the light)
 
 ```bash
-cd overlay
+git clone https://github.com/windssea/claudecode-light.git
+cd claudecode-light/overlay
 npm install   # first time only — installs Electron
 npm start
 ```
