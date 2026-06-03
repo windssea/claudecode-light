@@ -19,10 +19,24 @@ function sessionIdFromStdin(raw) {
   }
 }
 
+function readCurrentState(filePath) {
+  try {
+    return JSON.parse(require('node:fs').readFileSync(filePath, 'utf8')).state || 'idle';
+  } catch {
+    return 'idle';
+  }
+}
+
 function main() {
   const state = process.argv[2];
+  const filePath = statusFilePath();
+
+  // needs-you is only meaningful when Claude is actively working.
+  // If already idle, a Notification (e.g. post-response ping) should not turn the light red.
+  if (state === 'needs-you' && readCurrentState(filePath) !== 'working') return;
+
   const sessionId = sessionIdFromStdin(readStdinSync());
-  writeStatusAtomic(statusFilePath(), buildStatus(state, sessionId));
+  writeStatusAtomic(filePath, buildStatus(state, sessionId));
 }
 
 main();
