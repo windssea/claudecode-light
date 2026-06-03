@@ -1,6 +1,6 @@
 {
   "name": "claude-traffic-light",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "Shows Claude Code session status as an always-on-top desktop traffic light.",
   "license": "MIT"
 }
