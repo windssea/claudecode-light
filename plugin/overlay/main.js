@@ -31,7 +31,7 @@ function pushStatus() {
   if (!win) return;
   const { state, ts } = readStatus();
   const stale = isStale(state, ts, Date.now(), config.stalenessMinutes);
-  win.webContents.send('status', { state, stale, colors: config.colors });
+  win.webContents.send('status', { state, stale, colors: config.colors, style: config.style || 1 });
 }
 
 function cornerPosition(size, margin) {

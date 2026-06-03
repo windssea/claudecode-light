@@ -59,3 +59,18 @@ html, body {
 }
 
 #light.stale { opacity: 0.35; }
+
+/* ── Style 2: GIF mode ─────────────────────────────────────── */
+#gif-light {
+  display: none;
+  width: 100%; height: 100%;
+  object-fit: contain;
+  -webkit-app-region: drag;
+  user-select: none;
+  pointer-events: none;
+}
+
+body.style-gif #light    { display: none; }
+body.style-gif #gif-light { display: block; }
+
+#gif-light.stale { opacity: 0.35; }

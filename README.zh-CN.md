@@ -84,18 +84,32 @@ pkill -f "traffic-light/app"
 
 `/setup` 之后，编辑实时配置文件
 `~/.claude/traffic-light/app/overlay/config.json`，然后重启红绿灯（托盘 → Quit，
-再开一个 Claude 会话，或重新跑 `/setup`）。可配置项：
+再开一个 Claude 会话，或重新跑 `/setup`）。（源副本在 `plugin/overlay/config.json`。）
 
-- `size`：直径（像素）
-- `margin`：距屏幕边缘的间距
-- `position`：`top-right` | `top-left` | `bottom-right` | `bottom-left`
-- `stalenessMinutes`：黄灯多久没更新就判定为"可能卡死"（变暗提示）
-- `colors`：四个状态各自的颜色
-
-（源副本在 `plugin/overlay/config.json`。）
+| 配置项 | 说明 |
+|--------|------|
+| `style` | `1` — 玻璃灯泡样式（默认）；`2` — GIF 动画样式 |
+| `size` | 悬浮窗直径（像素） |
+| `margin` | 距屏幕边缘间距（像素） |
+| `position` | `top-right` \| `top-left` \| `bottom-right` \| `bottom-left` |
+| `stalenessMinutes` | `working` 状态超过多少分钟没更新就判定为"可能卡死"（变暗提示） |
+| `colors` | 各状态的十六进制颜色（仅 style 1 使用） |
 
 当 `working`（黄）状态超过 `stalenessMinutes` 没有更新——例如会话被强杀、没有正常
-触发 `Stop`/`SessionEnd`——红绿灯会**变暗到 40% 透明度**提示你它可能已经过期。
+触发 `Stop`/`SessionEnd`——红绿灯会**变暗到 35% 透明度**提示你它可能已经过期。
+
+### 样式 2 —— GIF 动画
+
+在 `plugin/overlay/assets/`（以及 live 目录 `~/.claude/traffic-light/app/overlay/assets/`）
+下放置三个 GIF 文件，然后将配置设为 `"style": 2`：
+
+| 文件名 | 对应状态 |
+|--------|----------|
+| `idle.gif` | 空闲 / 会话结束 |
+| `working.gif` | Claude 正在运行 |
+| `waiting.gif` | 需要你输入或授权 |
+
+GIF 会填满整个悬浮窗（`object-fit: contain`）。过期状态同样降为 35% 透明度。
 
 ## 不开会话也能预览
 

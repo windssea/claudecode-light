@@ -95,9 +95,30 @@ light dims to 40% opacity to flag that it may be stale.
 
 After `/setup`, edit the live config at
 `~/.claude/traffic-light/app/overlay/config.json` and restart the light (tray → Quit,
-then start a Claude session or re-run `/setup`). Keys: `size`, `margin`, `position`
-(`top-right` | `top-left` | `bottom-right` | `bottom-left`), `stalenessMinutes`,
-and per-state `colors`. (The source copy lives at `plugin/overlay/config.json`.)
+then start a Claude session or re-run `/setup`). (The source copy lives at `plugin/overlay/config.json`.)
+
+| Key | Description |
+|-----|-------------|
+| `style` | `1` — glass lamp (default); `2` — animated GIF |
+| `size` | Diameter in pixels |
+| `margin` | Distance from screen edge in pixels |
+| `position` | `top-right` \| `top-left` \| `bottom-right` \| `bottom-left` |
+| `stalenessMinutes` | Minutes before a stuck `working` state dims to 35% opacity |
+| `colors` | Per-state hex colors (used by style 1 only) |
+
+### Style 2 — GIF mode
+
+Place three GIF files under `plugin/overlay/assets/` (and the live
+`~/.claude/traffic-light/app/overlay/assets/`) then set `"style": 2`:
+
+| Filename | State |
+|----------|-------|
+| `idle.gif` | idle / session ended |
+| `working.gif` | Claude is running |
+| `waiting.gif` | Needs your input or authorization |
+
+The GIFs fill the overlay window (`object-fit: contain`). Stale state dims them
+to 35% opacity, same as style 1.
 
 ## Test it without a session
 
