@@ -64,15 +64,22 @@ function createWindow() {
 }
 
 function watchStatus() {
-  const dir = path.dirname(STATUS_FILE);
-  fs.mkdirSync(dir, { recursive: true });
-  let timer = null;
-  fs.watch(dir, (_event, filename) => {
-    if (filename && filename !== 'status.json') return; // react only to the post-rename file, not the .tmp
-    clearTimeout(timer);
-    timer = setTimeout(pushStatus, 50); // debounce rapid writes
-  });
-  setInterval(pushStatus, 30_000); // catch staleness even with no file events
+  fs.mkdirSync(path.dirname(STATUS_FILE), { recursive: true });
+  // Poll instead of fs.watch: on Windows, fs.watch frequently misses events from
+  // atomic-rename writes (write .tmp then rename), leaving the light stuck. A short
+  // poll on a tiny local file is cheap and reliable.
+  let last = null;
+  function tick() {
+    let cur = null;
+    try { cur = fs.readFileSync(STATUS_FILE, 'utf8'); } catch { cur = null; }
+    if (cur !== last) {
+      last = cur;
+      pushStatus();
+    }
+  }
+  tick();
+  setInterval(tick, 500);              // detect status changes quickly
+  setInterval(pushStatus, 30_000);    // re-eval staleness even when content is unchanged
 }
 
 // Build a small visible tray icon (a filled gray circle) so the user can always
