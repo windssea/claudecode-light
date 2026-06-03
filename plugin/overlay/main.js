@@ -68,7 +68,11 @@ const CONFIG_PATH = path.join(__dirname, 'config.json');
 function handleResize(_e, size) {
   if (!win) return;
   const s = Math.max(32, Math.min(400, Math.round(size)));
-  const { x, y } = cornerPosition(s, config.margin);
+  const [cx, cy] = win.getPosition();
+  const { width: sw, height: sh } = screen.getPrimaryDisplay().workAreaSize;
+  // Keep current position; only pull back if window would go off-screen.
+  const x = Math.max(0, Math.min(cx, sw - s));
+  const y = Math.max(0, Math.min(cy, sh - s));
   win.setBounds({ x, y, width: s, height: s });
   config.size = s;
   try { fs.writeFileSync(CONFIG_PATH, JSON.stringify(config, null, 2)); } catch { /* non-fatal */ }
