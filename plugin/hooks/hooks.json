@@ -2,7 +2,7 @@
   "hooks": {
     "SessionStart": [
       { "hooks": [
-        { "type": "command", "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/update-status.js\" working" },
+        { "type": "command", "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/update-status.js\" idle" },
         { "type": "command", "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/ensure-overlay.js\"" }
       ] }
     ],
