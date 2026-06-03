@@ -46,6 +46,38 @@ The light appears in the top-right corner, floats above other windows, and is dr
 Quit it from the system-tray menu (small gray circle icon); it will come back on your next
 Claude Code session.
 
+### Reinstall / Update
+
+`/setup` is safe to re-run at any time. If the overlay is currently running, its
+process holds a lock on the app directory and the copy step will fail with `EPERM`.
+Kill it first:
+
+**Windows**
+```bash
+powershell -NoProfile -Command "Stop-Process -Name electron -Force -ErrorAction SilentlyContinue"
+```
+
+**macOS**
+```bash
+pkill -f "traffic-light/app"
+```
+
+Then re-run setup:
+
+```text
+/claude-traffic-light:setup
+```
+
+This re-copies the plugin files (including any CSS/JS changes), reinstalls Electron
+if needed, and relaunches the overlay.
+
+> **Note:** `/setup` copies from the plugin cache
+> (`~/.claude/plugins/cache/windssea-tools/claude-traffic-light/`), not from your
+> dev clone. If you edit `plugin/overlay/renderer.css` locally, also apply the same
+> change to the live file at
+> `~/.claude/traffic-light/app/overlay/renderer.css` and restart the overlay — or
+> update the plugin cache and re-run `/setup`.
+
 ### Developing from a clone
 
 ```bash
@@ -54,10 +86,6 @@ cd claudecode-light/plugin/overlay && npm install && npm start   # run the overl
 ```
 
 `npm test` (at the repo root) runs the unit suite.
-
-If a `working` (yellow) state goes more than `stalenessMinutes` without an update
-— e.g. the session was force-killed without a clean `Stop`/`SessionEnd` — the
-light dims to 40% opacity to flag that it may be stale.
 
 If a `working` (yellow) state goes more than `stalenessMinutes` without an update
 — e.g. the session was force-killed without a clean `Stop`/`SessionEnd` — the

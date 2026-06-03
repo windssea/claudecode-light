@@ -42,6 +42,33 @@
 红绿灯出现在屏幕右上角，悬浮在其它窗口之上，可拖动。要关闭就从系统托盘菜单
 （那个灰色小圆点图标）点 Quit；下次开 Claude 会话时它会自己回来。
 
+## 重新安装 / 更新
+
+`/setup` 可以随时重复执行。如果悬浮窗正在运行，它的进程会锁住应用目录，导致复制步骤报 `EPERM` 错误。需要先关掉它：
+
+**Windows**
+```bash
+powershell -NoProfile -Command "Stop-Process -Name electron -Force -ErrorAction SilentlyContinue"
+```
+
+**macOS**
+```bash
+pkill -f "traffic-light/app"
+```
+
+然后重新执行安装：
+
+```text
+/claude-traffic-light:setup
+```
+
+这会重新复制插件文件（包括任何 CSS/JS 改动）、按需重装 Electron、并重新拉起悬浮窗。
+
+> **注意：** `/setup` 从插件缓存（`~/.claude/plugins/cache/windssea-tools/claude-traffic-light/`）复制，而不是从你的本地克隆。
+> 如果你在 `plugin/overlay/renderer.css` 做了修改，需要同时修改
+> `~/.claude/traffic-light/app/overlay/renderer.css` 并重启悬浮窗，
+> 或者更新插件缓存后重新跑 `/setup`。
+
 ## 跨平台
 
 代码是纯 Node + Electron，路径都用 `os.homedir()` 解析，**Windows 和 macOS 都能跑**：
