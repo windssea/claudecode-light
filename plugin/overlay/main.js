@@ -1,4 +1,4 @@
-const { app, BrowserWindow, Tray, Menu, screen } = require('electron');
+const { app, BrowserWindow, Tray, Menu, screen, ipcMain } = require('electron');
 const fs = require('node:fs');
 const path = require('node:path');
 const { statusFilePath } = require('../lib/paths');
@@ -61,6 +61,17 @@ function createWindow() {
   }
   win.loadFile(path.join(__dirname, 'renderer.html'));
   win.webContents.on('did-finish-load', pushStatus);
+}
+
+const CONFIG_PATH = path.join(__dirname, 'config.json');
+
+function handleResize(_e, size) {
+  if (!win) return;
+  const s = Math.max(32, Math.min(400, Math.round(size)));
+  const { x, y } = cornerPosition(s, config.margin);
+  win.setBounds({ x, y, width: s, height: s });
+  config.size = s;
+  try { fs.writeFileSync(CONFIG_PATH, JSON.stringify(config, null, 2)); } catch { /* non-fatal */ }
 }
 
 function watchStatus() {
@@ -132,6 +143,7 @@ if (!app.requestSingleInstanceLock()) {
     createWindow();
     createTray();
     watchStatus();
+    ipcMain.on('resize', handleResize);
   });
 
   app.on('quit', clearPidFile);

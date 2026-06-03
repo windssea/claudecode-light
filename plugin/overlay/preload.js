@@ -5,4 +5,5 @@ contextBridge.exposeInMainWorld('trafficLight', {
     ipcRenderer.removeAllListeners('status');
     ipcRenderer.on('status', (_e, data) => cb(data));
   },
+  resize: (size) => ipcRenderer.send('resize', size),
 });
